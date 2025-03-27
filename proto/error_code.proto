@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package proto.common;
+
+enum ErrorCode {
+    PANCAKE_STORE_OK = 0;
+};

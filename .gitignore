@@ -2,3 +2,5 @@
 
 /build/
 /deps/
+/proto/*.pb.h
+/proto/*.pb.cc
