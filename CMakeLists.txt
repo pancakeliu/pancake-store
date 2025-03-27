@@ -68,5 +68,14 @@ if (CMAKE_BUILD_MODULE MATCHES deps)
     set(PANCAKE_STORE_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps)
     add_subdirectory(${PANCAKE_STORE_THIRD_PARTY_DIR})
 else()
-    message("ok!!!")
+    message("cmake to build pancake-store!!!!")
+
+    # third party directory
+    set(PANCAKE_STORE_THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/third_party)
+    set(PANCAKE_STORE_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps)
+    add_subdirectory(${PANCAKE_STORE_THIRD_PARTY_DIR})
+
+    # src directory
+    set(PANCAKE_STORE_SRC_DIR ${CMCMAKE_SOURCE_DIR}/src)
+    add_subdirectory(${PANCAKE_STORE_SRC_DIR})
 endif ()
