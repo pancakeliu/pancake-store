@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(pancake-store VERSION 1.0)
@@ -13,7 +13,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pipe -W -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pipe -W -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -fPIC -fno-omit-frame-pointer")
 
 if(CMAKE_BUILD_TYPE MATCHES debug-asan)
@@ -70,6 +70,8 @@ if (CMAKE_BUILD_MODULE MATCHES deps)
 else()
     message("cmake to build pancake-store!!!!")
 
+    include_directories(${CMAKE_SOURCE_DIR})
+
     # third party directory
     set(PANCAKE_STORE_THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/third_party)
     set(PANCAKE_STORE_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps)
@@ -78,5 +80,9 @@ else()
     # src directory
     set(PANCAKE_STORE_SRC_DIR ${CMAKE_SOURCE_DIR}/src)
     add_subdirectory(${PANCAKE_STORE_SRC_DIR})
+
+    # proto directory
+    set(PANCAKE_STORE_PROTO_DIR ${CMAKE_SOURCE_DIR}/proto)
+    add_subdirectory(${PANCAKE_STORE_PROTO_DIR})
 
 endif ()
