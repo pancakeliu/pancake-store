@@ -76,6 +76,7 @@ else()
     add_subdirectory(${PANCAKE_STORE_THIRD_PARTY_DIR})
 
     # src directory
-    set(PANCAKE_STORE_SRC_DIR ${CMCMAKE_SOURCE_DIR}/src)
+    set(PANCAKE_STORE_SRC_DIR ${CMAKE_SOURCE_DIR}/src)
     add_subdirectory(${PANCAKE_STORE_SRC_DIR})
+
 endif ()
