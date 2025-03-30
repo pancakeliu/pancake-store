@@ -21,17 +21,24 @@ inline T ReadArithmeticType(Input& input) {
 }
 
 template <typename Output>
-inline void Write(Serializer, Output &output, const seastar::sstring &val) {
+inline void write(Serializer, Output &output, const seastar::sstring &val) {
     WriteArithmeticType(output, static_cast<uint32_t>(val.size()));
     output.write(val.c_str(), val.size());
 }
 
 template <typename Input>
-inline seastar::sstring Read(Serializer, Input& input, seastar::rpc::type<seastar::sstring>) {
+inline seastar::sstring read(Serializer, Input& input, seastar::rpc::type<seastar::sstring>) {
     auto size = ReadArithmeticType<uint32_t>(input);
-    seastar::sstring ret = uninitialized_string(size);
+    seastar::sstring ret = seastar::uninitialized_string(size);
     input.read(ret.data(), size);
     return ret;
+}
+
+template <typename Output>
+inline void write(Serializer, Output& output, int v) { return write_arithmetic_type(output, v); }
+template <typename Input>
+inline int read(Serializer, Input& input, seastar::rpc::type<int>) {
+    return ReadArithmeticType<int>(input);
 }
 
 #define GET_RPC_METHOD_INLINE inline seastar::rpc::protocol<Serializer> &GetRpc() { return rpc_; }

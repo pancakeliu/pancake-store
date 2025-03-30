@@ -6,10 +6,8 @@ namespace pancake_store::comm {
 
 using ErrorCode = proto::common::ErrorCode;
 
-using proto::common::ErrorCode_Name;
-
 inline std::string ErrorCodeName(const ErrorCode code) {
-    return ErrorCode_Name(code);
+    return proto::common::ErrorCode_Name(code);
 }
 
 inline bool IsOk(const ErrorCode code) {

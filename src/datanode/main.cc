@@ -3,9 +3,14 @@
 #include <seastar/core/reactor.hh>
 
 #include "src/comm/error_code.h"
+#include "src/datanode/service/device_service.h"
+
+#include <cassert>
 
 using pancake_store::comm::ErrorCode;
 using pancake_store::comm::ErrorCodeName;
+
+using pancake_store::datanode::service::DeviceService;
 
 constexpr unsigned main_worker_cpu_id = 0;
 
@@ -15,16 +20,25 @@ int main(const int argc, char **argv) {
 
     app.add_options()
         ("version,v", boost::program_options::value<bool>()->default_value(false), "pancake store version")
-        ("rpc-port", boost::program_options::value<uint16_t>()->default_value(8888), "datanode rpc server listen port")
+        ("device-server-port", boost::program_options::value<uint16_t>()->default_value(8888), "datanode device server listen port")
         ("http-port", boost::program_options::value<uint16_t>()->default_value(9999), "datanode http server listen port");
 
-    return app.run(argc, argv, [&logger] {
+    uint16_t device_server_port = 8888;
+
+    return app.run(argc, argv, [&logger, device_server_port] {
         // start first worker, run in 0 cpu
-        return seastar::smp::submit_to(main_worker_cpu_id, [&logger] {
-            logger.info("start datanode main worker");
-            return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
+        return seastar::smp::submit_to(main_worker_cpu_id, [&logger, device_server_port] {
+            // check shard id
+            assert(seastar::this_shard_id() == main_worker_cpu_id);
+            logger.info("start datanode main worker. current_cpu:{}", seastar::this_shard_id());
+
+            // start rpc
+            return DeviceService::Instance().Start(device_server_port).then([&logger]() {
+                logger.info("device server stoped!!!");
+                return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
+            });
         }).then([&logger] (const ErrorCode error_code) {
-            logger.error("datanode main worker run failed. err_code:%s", ErrorCodeName(error_code));
+            logger.error("datanode main worker run failed. err_code:{}", ErrorCodeName(error_code));
             return seastar::make_ready_future<>();
         });
     });

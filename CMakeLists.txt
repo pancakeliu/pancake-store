@@ -77,6 +77,8 @@ else()
     set(PANCAKE_STORE_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps)
     add_subdirectory(${PANCAKE_STORE_THIRD_PARTY_DIR})
 
+    set(Seastar_DIR "${PANCAKE_STORE_DEPS_DIR}/seastar/lib/cmake/Seastar")
+
     # src directory
     set(PANCAKE_STORE_SRC_DIR ${CMAKE_SOURCE_DIR}/src)
     add_subdirectory(${PANCAKE_STORE_SRC_DIR})

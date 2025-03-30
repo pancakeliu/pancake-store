@@ -1,8 +1,8 @@
 # pancake-store src CMakeLists.txt
 
 # rpc directory
-#set(PANCAKE_STORE_SRC_RPC_DIR ${PANCAKE_STORE_SRC_DIR}/rpc)
-#add_subdirectory(${PANCAKE_STORE_SRC_RPC_DIR})
+set(PANCAKE_STORE_SRC_RPC_DIR ${PANCAKE_STORE_SRC_DIR}/rpc)
+add_subdirectory(${PANCAKE_STORE_SRC_RPC_DIR})
 
 # comm directory
 set(PANCAKE_STORE_SRC_COMM_DIR ${PANCAKE_STORE_SRC_DIR}/comm)

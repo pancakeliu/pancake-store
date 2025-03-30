@@ -10,5 +10,11 @@ include_directories(
         ${SEASTAR_INCLUDE}
 )
 
-add_library(rpc OBJECT ${RPC_SOURCES_AND_HEADERS})
-target_link_libraries(rpc PUBLIC ${SEASTAR_LIB})
+find_package (Seastar REQUIRED)
+
+add_library(pc-rpc OBJECT ${RPC_SOURCES_AND_HEADERS})
+target_link_libraries(
+        pc-rpc
+        PUBLIC
+        Seastar::seastar
+)
