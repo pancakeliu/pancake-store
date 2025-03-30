@@ -33,8 +33,8 @@ using proto::service::datanode::ReadAtRequest;
 using proto::service::datanode::ReadAtResponse;
 
 // device manager rpc
-using AddDeviceHandler = std::function<seastar::future<ErrorCode>(const AddDeviceRequest&, AddDeviceResponse*)>;
-using DelDeviceHandler = std::function<seastar::future<ErrorCode>(const DelDeviceRequest&, DelDeviceResponse*)>;
+using AddDeviceHandler = std::function<ErrorCode(const AddDeviceRequest&, AddDeviceResponse*)>;
+using DelDeviceHandler = std::function<ErrorCode(const DelDeviceRequest&, DelDeviceResponse*)>;
 
 class DatanodeDeviceServer : public NonCopyable {
 public:

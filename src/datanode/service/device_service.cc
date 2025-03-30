@@ -15,21 +15,24 @@ seastar::future<> DeviceService::Start(uint16_t listen_port) {
     rpc_server_.RegisterDelDeviceHandler(delDevice);
 
     auto server = std::make_unique<seastar::rpc::protocol<Serializer>::server>(rpc_server_.GetRpc(), seastar::socket_address(seastar::ipv4_addr{"0.0.0.0", listen_port}));
-    return seastar::keep_doing([this] {
-        return seastar::sleep(std::chrono::milliseconds(10));
-    }).finally([this, &server] {
-        return server->stop();
+    (void)seastar::do_with(std::move(server), [this](auto &server) {
+        return seastar::keep_doing([this] {
+            logger_.info("okok....");
+            return seastar::sleep(std::chrono::milliseconds(100));
+        });
     });
+
+    return seastar::make_ready_future<>();
 }
 
-seastar::future<ErrorCode> DeviceService::addDevice(const AddDeviceRequest& request, AddDeviceResponse* response) {
+ErrorCode DeviceService::addDevice(const AddDeviceRequest& request, AddDeviceResponse* response) {
     Instance().logger_.info("add device invoke success...");
-    return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
+    return ErrorCode::PANCAKE_STORE_OK;
 }
 
-seastar::future<ErrorCode> DeviceService::delDevice(const DelDeviceRequest& request, DelDeviceResponse* response) {
+ErrorCode DeviceService::delDevice(const DelDeviceRequest& request, DelDeviceResponse* response) {
     Instance().logger_.info("del device invoke success...");
-    return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
+    return ErrorCode::PANCAKE_STORE_OK;
 }
 
 } // namespace pancake_store::datanode::service

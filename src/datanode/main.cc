@@ -1,6 +1,7 @@
 
 #include <seastar/core/app-template.hh>
 #include <seastar/core/reactor.hh>
+#include <seastar/core/sleep.hh>
 
 #include "src/comm/error_code.h"
 #include "src/datanode/service/device_service.h"
@@ -33,13 +34,15 @@ int main(const int argc, char **argv) {
             logger.info("start datanode main worker. current_cpu:{}", seastar::this_shard_id());
 
             // start rpc
-            return DeviceService::Instance().Start(device_server_port).then([&logger]() {
-                logger.info("device server stoped!!!");
-                return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
+            (void)DeviceService::Instance().Start(device_server_port).then([&logger]() {
+                logger.info("device service start success!!");
+                return seastar::make_ready_future<>();
             });
-        }).then([&logger] (const ErrorCode error_code) {
-            logger.error("datanode main worker run failed. err_code:{}", ErrorCodeName(error_code));
-            return seastar::make_ready_future<>();
+
+            return seastar::keep_doing([&logger] {
+                logger.info("okok....");
+                return seastar::sleep(std::chrono::milliseconds(100));
+            });
         });
     });
 }

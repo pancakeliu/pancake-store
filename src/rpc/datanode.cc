@@ -16,7 +16,7 @@ void DatanodeDeviceServer::RegisterAddDeviceHandler(AddDeviceHandler handler) {
             AddDeviceResponse response{};
             request.ParseFromString(request_data.c_str());
 
-            auto err_code = add_device_handler_(request, &response).get0();
+            auto err_code = add_device_handler_(request, &response);
             if (comm::IsNotOk(err_code)) {
                 logger_.error("add_device failed. err:{}", comm::ErrorCodeName(err_code));
                 response.mutable_response_common()->set_error_code(err_code);
@@ -37,7 +37,7 @@ void DatanodeDeviceServer::RegisterDelDeviceHandler(DelDeviceHandler handler) {
             DelDeviceResponse response{};
             request.ParseFromString(request_data.c_str());
 
-            auto err_code = del_device_handler_(request, &response).get0();
+            auto err_code = del_device_handler_(request, &response);
             if (comm::IsNotOk(err_code)) {
                 logger_.error("del_device failed. err:{}", comm::ErrorCodeName(err_code));
                 response.mutable_response_common()->set_error_code(err_code);

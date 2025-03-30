@@ -31,8 +31,8 @@ private:
     DeviceService() = default;
     ~DeviceService() = default;
 
-    static seastar::future<ErrorCode> addDevice(const AddDeviceRequest& request, AddDeviceResponse* response);
-    static seastar::future<ErrorCode> delDevice(const DelDeviceRequest& request, DelDeviceResponse* response);
+    static ErrorCode addDevice(const AddDeviceRequest& request, AddDeviceResponse* response);
+    static ErrorCode delDevice(const DelDeviceRequest& request, DelDeviceResponse* response);
 
 private:
     DatanodeDeviceServer rpc_server_;
