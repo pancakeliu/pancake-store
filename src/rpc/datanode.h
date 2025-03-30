@@ -18,9 +18,18 @@ using proto::service::datanode::WriteAtResponse;
 using proto::service::datanode::ReadAtRequest;
 using proto::service::datanode::ReadAtResponse;
 
-enum class C2SDatanodeAPI : unsigned {
-    WriteAt = 1,
-    ReadAt = 2,
+enum class DatanodeAPI : unsigned {
+    // for sdk request
+    WriteAt = 1001,
+    ReadAt = 1002,
+
+    // for master request
+    AddDevice = 2003,
+    DelDevice = 2004,
+    AddExtent = 2005,
+    DelExtent = 2006,
+    ListExtents = 2007,
+    ListDevices = 2008,
 };
 
 using WriteAtHandler = std::function<ErrorCode(const WriteAtRequest&, WriteAtResponse*)>;

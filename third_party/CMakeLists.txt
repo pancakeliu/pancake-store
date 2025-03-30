@@ -63,6 +63,7 @@ if (CMAKE_BUILD_MODULE MATCHES deps)
             CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${GTEST_LIB_DIR}
             BUILD_COMMAND ${CMAKE_COMMAND} --build . -j ${CPU_CORES}
             INSTALL_COMMAND ${CMAKE_COMMAND} --build . --target install
+            DEPENDS isal
     )
 
     # include seastar lib
@@ -70,9 +71,10 @@ if (CMAKE_BUILD_MODULE MATCHES deps)
             seastar
             SOURCE_DIR ${SEASTAR_SOURCE_DIR}
             BINARY_DIR ${SEASTAR_SOURCE_DIR}
-            CONFIGURE_COMMAND cd ${SEASTAR_SOURCE_DIR} && sudo bash install-dependencies.sh && ./configure.py --mode=release --prefix=${SEASTAR_LIB_DIR}
-            BUILD_COMMAND cd ${SEASTAR_SOURCE_DIR} && ninja -C build/release
+            CONFIGURE_COMMAND cd ${SEASTAR_SOURCE_DIR} && sudo bash install-dependencies.sh && ./configure.py --mode=release --prefix=${SEASTAR_LIB_DIR} --without-tests --without-apps --without-demos
+            BUILD_COMMAND cd ${SEASTAR_SOURCE_DIR} && ninja -C build/release -j ${CPU_CORES}
             INSTALL_COMMAND cd ${SEASTAR_SOURCE_DIR} && ninja -C build/release install
+            DEPENDS googletest
     )
 
     # include spdk lib
@@ -83,11 +85,12 @@ if (CMAKE_BUILD_MODULE MATCHES deps)
             CONFIGURE_COMMAND cd ${SPDK_SOURCE_DIR} && sudo bash ./scripts/pkgdep.sh && bash ./configure --prefix=${SPDK_LIB_DIR}
             BUILD_COMMAND make -j${CPU_CORES}
             INSTALL_COMMAND make install
+            DEPENDS seastar
     )
 
     add_custom_target(DepsFinished
             COMMAND echo "all third libraries install finished."
-            DEPENDS isal seastar
+            DEPENDS isal seastar googletest spdk
     )
 else ()
     add_custom_target(DepsFinished

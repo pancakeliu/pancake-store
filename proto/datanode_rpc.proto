@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package proto.service.datanode;
+
+option cc_generic_services = true;
+
+import "common.proto";
+import "extent.proto";
+
+enum DatanodeRpc {
+    DATANODE_RPC_UNKONWN = 0;
+    // for master api
+    DATANODE_RPC_ADD_DEVICE = 1001;
+    DATANODE_RPC_DEL_DEVICE = 1002;
+    DATANODE_RPC_ADD_EXTENT = 1003;
+    DATANODE_RPC_DEL_EXTENT = 1004;
+    DATANODE_RPC_SEAL_EXTENT = 1005;
+    DATANODE_RPC_LIST_EXTENTS = 1006;
+    DATANODE_RPC_LIST_DEVICES = 1007;
+}
+
+// for master
+message AddDeviceRequest {
+    proto.common.RequestCommon request_common = 1;
+    string datanode_id = 2;
+    uint64 disk_id = 3; // auto increase
+}
+
+message AddDeviceResponse {
+    proto.common.ResponseCommon response_common = 1;
+    uint64 total_size = 2;
+}
+
+message DelDeviceRequest {
+    proto.common.RequestCommon request_common = 1;
+    string datanode_id = 2;
+    uint64 disk_id = 3;
+}
+
+message DelDeviceResponse {
+    proto.common.ResponseCommon response_common = 1;
+}
+
+message AddExtentRequest {
+    proto.common.RequestCommon request_common = 1;
+    string datanode_id = 2;
+    uint64 disk_id = 3;
+    uint64 extent_id = 4;
+    uint32 shard_id = 5;
+    proto.extent.RedundantType redundant_type = 6;
+    uint32 shard_size = 7;
+}
+
+message AddExtentResponse {
+    proto.common.ResponseCommon response_common = 1;
+}
+
+message DelExtentRequest {
+    proto.common.RequestCommon request_common = 1;
+    string datanode_id = 2;
+    uint64 disk_id = 3;
+    uint64 extent_id = 4;
+    uint32 shard_id = 5;
+}
+
+message DelExtentResponse {
+    proto.common.ResponseCommon response_common = 1;
+}
+
+message SealExtentRequest {
+    proto.common.RequestCommon reuqest_common = 1;
+    string datanode_id = 2;
+    uint64 disk_id = 3;
+    uint64 extent_id = 4;
+    uint32 shard_id = 6;
+}
+
+message SealExtentResponse {
+    proto.common.ResponseCommon response_common = 1;
+    uint32 shard_id = 2;
+    uint32 sealed_length = 3;
+}
+
+message ListExtentsRequest {
+    proto.common.RequestCommon request_common = 1;
+    string datanode_id = 2;
+    uint64 disk_id = 3;
+    uint64 start_extent_id = 4;
+    uint64 count = 5;
+}
+
+message ListExtentsResponse {
+    proto.common.ResponseCommon response_common = 1;
+    repeated proto.extent.ShardInfo shard_infos = 2;
+}
+
+// TODO: list devices
+
+// for sdks
+message WriteAtRequest {
+    proto.common.RequestCommon request_common = 1;
+    uint64 extent_id = 2;
+    uint64 session_id = 3;
+    uint32 shard_id = 4;
+    bytes  data = 5;
+    uint32 offset = 6;
+}
+
+message WriteAtResponse {
+    proto.common.ResponseCommon error_code = 1;
+    // TODO: black list
+}
+
+message ReadAtRequest {
+    proto.common.RequestCommon request_common = 1;
+    uint64 extent_id = 2;
+    uint32 shard_id = 3;
+    uint32 offset = 4;
+    uint32 length = 5;
+}
+
+message ReadAtResponse {
+    proto.common.ResponseCommon error_code = 1;
+    bytes data = 2;
+    // TODO: black list
+}

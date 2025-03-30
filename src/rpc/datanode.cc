@@ -1,5 +1,5 @@
 
-#include "src/rpc/c2s_datanode.h"
+#include "src/rpc/datanode.h"
 
 namespace pancake_store::rpc {
 

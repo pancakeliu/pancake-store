@@ -12,4 +12,4 @@ file(
         "${PANCAKE_STORE_PROTO_DIR}/*.h"
         "${PANCAKE_STORE_PROTO_DIR}/*.cc"
 )
-add_library(proto OBJECT ${PROTO_SOURCES_AND_HEADERS})
+add_library(pc-proto OBJECT ${PROTO_SOURCES_AND_HEADERS})

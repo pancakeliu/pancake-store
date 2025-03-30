@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package proto.extent;
+
+message ExtentInfo {
+    uint64 extent_id = 1;
+    RedundantInfo redundant_info = 2;
+    uint32 extent_size = 3;
+    ExtentStatus status = 4;
+    repeated ShardInfo infos = 5;
+    uint32 seal_length = 6;
+    int64 report_time = 7;
+    int64 modify_time = 8;
+    int64 last_sealed_time = 9;
+}
+
+message ShardInfo {
+    uint32 shard_id = 1;
+    uint64 extent_id = 2;
+    string datanode_id = 3;
+    uint32 disk_id = 4;
+    uint32 ip = 5;
+    uint32 port = 6;
+    uint32 shard_size = 7;
+    uint32 seal_length = 8;
+}
+
+enum ExtentStatus {
+    EXTENT_STATUS_UNKNOWN = 0;
+    EXTENT_STATUS_RW = 1;
+    //EXTENT_STATUS_RO = 2; // really need RO stat???
+    EXTENT_STATUS_SEALED = 2;
+    EXTENT_STATUS_MIGRATING = 3;
+    EXTENT_STATUS_CORRUPT = 4;
+}
+
+enum RedundantType {
+    REDUNDANT_TYPE_UNKNOWN = 0;
+    REDUNDANT_TYPE_REP = 1;
+    REDUNDANT_TYPE_EC = 2;
+    REDUNDANT_TYPE_LRC = 3;
+}
+
+message RedundantInfo {
+    RedundantType redundant_type = 1;
+    uint32 rep_cnt = 2;
+    uint32 ec_data_cnt = 3;
+    uint32 ec_code_cnt = 4;
+    uint32 ec_strip_size = 5;
+}

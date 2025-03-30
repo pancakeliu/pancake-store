@@ -2,8 +2,16 @@ syntax = "proto3";
 
 package proto.common;
 
+import "error_code.proto";
+
 message RequestCommon {
     string request_source = 1;
     string request_id = 2;
     uint32 timeout_ms = 3;
+    string cluster_id = 4;
+}
+
+message ResponseCommon {
+    proto.common.ErrorCode error_code = 1;
+    string error_message = 2;
 }
