@@ -49,14 +49,6 @@ void DatanodeDeviceServer::RegisterDelDeviceHandler(DelDeviceHandler handler) {
         });
 }
 
-auto DatanodeDeviceClient::AddDeviceCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_ADD_DEVICE);
-}
-
-auto DatanodeDeviceClient::DelDeviceCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_DEL_DEVICE);
-}
-
 void DatanodeExtentServer::RegisterAddExtentHandler(AddExtentHandler handler) {
     add_extent_handler_ = std::move(handler);
 

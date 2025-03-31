@@ -40,8 +40,7 @@ int main(const int argc, char **argv) {
             });
 
             return seastar::keep_doing([&logger] {
-                logger.info("okok....");
-                return seastar::sleep(std::chrono::milliseconds(100));
+                return seastar::sleep(std::chrono::seconds(1));
             });
         });
     });

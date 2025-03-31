@@ -14,7 +14,7 @@ message("datanode cmake..")
 set(DATANODE_SERVICE_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/service)
 add_subdirectory(${DATANODE_SERVICE_DIR})
 
-# device modlue
+# device module
 set(DATANODE_DEVICE_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/device)
 add_subdirectory(${DATANODE_DEVICE_DIR})
 
@@ -29,7 +29,7 @@ add_subdirectory(${DATANODE_DEVICE_DIR})
 add_executable(pc-datanode ${PANCAKE_STORE_SRC_DATANODE_DIR}/main.cc)
 add_dependencies(pc-datanode DepsFinished)
 
-find_package (Seastar REQUIRED)
+find_package(Seastar REQUIRED)
 
 target_include_directories(
         pc-datanode

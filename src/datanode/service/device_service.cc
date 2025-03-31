@@ -17,8 +17,7 @@ seastar::future<> DeviceService::Start(uint16_t listen_port) {
     auto server = std::make_unique<seastar::rpc::protocol<Serializer>::server>(rpc_server_.GetRpc(), seastar::socket_address(seastar::ipv4_addr{"0.0.0.0", listen_port}));
     (void)seastar::do_with(std::move(server), [this](auto &server) {
         return seastar::keep_doing([this] {
-            logger_.info("okok....");
-            return seastar::sleep(std::chrono::milliseconds(100));
+            return seastar::sleep(std::chrono::seconds(1));
         });
     });
 

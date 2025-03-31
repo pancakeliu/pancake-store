@@ -71,9 +71,9 @@ if (CMAKE_BUILD_MODULE MATCHES deps)
             seastar
             SOURCE_DIR ${SEASTAR_SOURCE_DIR}
             BINARY_DIR ${SEASTAR_SOURCE_DIR}
-            CONFIGURE_COMMAND cd ${SEASTAR_SOURCE_DIR} && sudo bash install-dependencies.sh && ./configure.py --mode=release --prefix=${SEASTAR_LIB_DIR} --without-tests --without-apps --without-demos
-            BUILD_COMMAND cd ${SEASTAR_SOURCE_DIR} && ninja -C build/release -j ${CPU_CORES}
-            INSTALL_COMMAND cd ${SEASTAR_SOURCE_DIR} && ninja -C build/release install
+            CONFIGURE_COMMAND cd ${SEASTAR_SOURCE_DIR} && sudo bash install-dependencies.sh && ./configure.py --mode=debug --prefix=${SEASTAR_LIB_DIR} --without-tests --without-apps --without-demos
+            BUILD_COMMAND cd ${SEASTAR_SOURCE_DIR} && ninja -C build/debug -j ${CPU_CORES}
+            INSTALL_COMMAND cd ${SEASTAR_SOURCE_DIR} && ninja -C build/debug install
             DEPENDS googletest
     )
 

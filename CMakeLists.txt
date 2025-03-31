@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(pancake-store VERSION 1.0)
 
@@ -86,5 +87,9 @@ else()
     # proto directory
     set(PANCAKE_STORE_PROTO_DIR ${CMAKE_SOURCE_DIR}/proto)
     add_subdirectory(${PANCAKE_STORE_PROTO_DIR})
+
+    # tools directory
+    set(PANCAKE_STORE_TOOLS_DIR ${CMAKE_SOURCE_DIR}/tools)
+    add_subdirectory(${PANCAKE_STORE_TOOLS_DIR})
 
 endif ()
