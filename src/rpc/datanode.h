@@ -56,8 +56,8 @@ private:
     DelDeviceHandler del_device_handler_;
 };
 
-#define ADD_DEVICE_CALLER(rpc) ((rpc).make_client<seastar::future<seastar::sstring>(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_ADD_DEVICE))
-#define DEL_DEVICE_CALLER(rpc) ((rpc).make_client<seastar::future<seastar::sstring>(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_DEL_DEVICE))
+#define ADD_DEVICE_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_ADD_DEVICE))
+#define DEL_DEVICE_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_DEL_DEVICE))
 
 // Datanode Extent Server
 using AddExtentHandler = std::function<ErrorCode(const AddExtentRequest&, AddExtentResponse*)>;

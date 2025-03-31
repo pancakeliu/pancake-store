@@ -35,7 +35,7 @@ inline seastar::sstring read(Serializer, Input& input, seastar::rpc::type<seasta
 }
 
 template <typename Output>
-inline void write(Serializer, Output& output, int v) { return write_arithmetic_type(output, v); }
+inline void write(Serializer, Output& output, int v) { return WriteArithmeticType(output, v); }
 template <typename Input>
 inline int read(Serializer, Input& input, seastar::rpc::type<int>) {
     return ReadArithmeticType<int>(input);
