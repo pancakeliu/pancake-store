@@ -22,10 +22,10 @@ using proto::service::datanode::AddDeviceResponse;
 using proto::service::datanode::DelDeviceRequest;
 using proto::service::datanode::DelDeviceResponse;
 
-class DatanodeDeviceCaller : public NonCopyable {
+class DatanodeManagerCaller : public NonCopyable {
 public:
-    DatanodeDeviceCaller(const seastar::sstring &ip, uint16_t port);
-    ~DatanodeDeviceCaller();
+    DatanodeManagerCaller(const seastar::sstring &ip, uint16_t port);
+    ~DatanodeManagerCaller();
 
     seastar::future<> Close();
 
@@ -35,7 +35,7 @@ public:
 private:
     std::shared_ptr<seastar::rpc::protocol<Serializer>::client> client_;
     seastar::rpc::protocol<Serializer> rpc_{Serializer{}};
-    seastar::logger logger_{"datanode_device_caller"};
+    seastar::logger logger_{"datanode_manager_caller"};
 
     bool closed_{false};
 };

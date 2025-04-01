@@ -1,15 +1,15 @@
 
-#include "src/pkg/rpc_caller/datanode_device_caller.h"
+#include "src/pkg/rpc_caller/datanode_manager_caller.h"
 
 namespace pancake_store::pkg::rpc_caller {
 
 using proto::service::datanode::DatanodeRpc;
 
-DatanodeDeviceCaller::DatanodeDeviceCaller(const seastar::sstring &ip, const uint16_t port) {
+DatanodeManagerCaller::DatanodeManagerCaller(const seastar::sstring &ip, const uint16_t port) {
     client_ = std::make_shared<seastar::rpc::protocol<Serializer>::client>(rpc_, seastar::ipv4_addr{ip, port});
 }
 
-DatanodeDeviceCaller::~DatanodeDeviceCaller(){
+DatanodeManagerCaller::~DatanodeManagerCaller(){
     if (!closed_) {
         logger_.error("code error!!, datanode device caller not close");
         // TODO(pancake): de-terminate???
@@ -17,7 +17,7 @@ DatanodeDeviceCaller::~DatanodeDeviceCaller(){
     }
 }
 
-seastar::future<> DatanodeDeviceCaller::Close() {
+seastar::future<> DatanodeManagerCaller::Close() {
     return client_->stop()
         .then([this] {
             closed_ = true;
@@ -25,7 +25,7 @@ seastar::future<> DatanodeDeviceCaller::Close() {
         });
 }
 
-seastar::future<ErrorCode> DatanodeDeviceCaller::AddDevice(const AddDeviceRequest &request, AddDeviceResponse *response) {
+seastar::future<ErrorCode> DatanodeManagerCaller::AddDevice(const AddDeviceRequest &request, AddDeviceResponse *response) {
     auto caller = ADD_DEVICE_CALLER(rpc_);
 
     return caller(*client_, request.SerializeAsString())
@@ -44,7 +44,7 @@ seastar::future<ErrorCode> DatanodeDeviceCaller::AddDevice(const AddDeviceReques
     });
 }
 
-seastar::future<ErrorCode> DatanodeDeviceCaller::DelDevice(const DelDeviceRequest &request, DelDeviceResponse *response) {
+seastar::future<ErrorCode> DatanodeManagerCaller::DelDevice(const DelDeviceRequest &request, DelDeviceResponse *response) {
     auto caller = DEL_DEVICE_CALLER(rpc_);
 
     return caller(*client_, request.SerializeAsString())

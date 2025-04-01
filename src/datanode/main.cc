@@ -4,7 +4,7 @@
 #include <seastar/core/sleep.hh>
 
 #include "src/comm/error_code.h"
-#include "src/datanode/service/device_service.h"
+#include "src/datanode/service/manager_service.h"
 
 #include <cassert>
 

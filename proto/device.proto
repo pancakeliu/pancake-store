@@ -1,0 +1,35 @@
+
+syntax = "proto3";
+
+package proto.device;
+
+enum FSType {
+  	FS_TYPE_UNKNOWN = 0;
+    FS_TYPE_POSIX = 1;
+    FS_TYPE_PANCAKE_BY_RAW = 2;
+    FS_TYPE_PANCAKE_BY_SPDK = 3;
+}
+
+enum DeviceStatus {
+  	DEVICE_STATUS_UNKNOWN = 0;
+    DEVICE_STATUS_OK = 1;
+    DEVICE_STATUS_DOWN = 2;
+    DEVICE_STATUS_SLOW = 3;
+}
+
+message DeviceInfo {
+		uint64 device_id = 1;
+    string datanode_id = 2;
+    string ip = 3;
+    uint32 port = 4;
+    string device_path = 5;
+    FSType fs_type = 6;
+}
+
+message DeviceMutableInfo {
+    uint64 device_id = 1;
+    uint64 device_total_size = 2;
+    uint64 device_alloc_size = 3;
+    uint64 device_used_size = 4;
+
+}
