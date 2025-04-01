@@ -11,7 +11,7 @@
 using pancake_store::comm::ErrorCode;
 using pancake_store::comm::ErrorCodeName;
 
-using pancake_store::datanode::service::DeviceService;
+using pancake_store::datanode::service::ManagerService;
 
 constexpr unsigned main_worker_cpu_id = 0;
 
@@ -34,7 +34,7 @@ int main(const int argc, char **argv) {
             logger.info("start datanode main worker. current_cpu:{}", seastar::this_shard_id());
 
             // start rpc
-            (void)DeviceService::Instance().Start(device_server_port).then([&logger]() {
+            (void)ManagerService::Instance().Start(device_server_port).then([&logger]() {
                 logger.info("device service start success!!");
                 return seastar::make_ready_future<>();
             });

@@ -4,8 +4,10 @@ package proto.common;
 
 enum ErrorCode {
     PANCAKE_STORE_OK = 0;
+    PANCAKE_STORE_CLUSTER_ID_NOT_MATCH = 1;
 
     // datanode error code 1xxxx
+    DATANODE_DEVICE_ALREAY_EXISTS = 10001;
 
     // master error code
 

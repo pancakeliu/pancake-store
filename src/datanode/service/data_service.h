@@ -13,7 +13,7 @@ using pancake_store::comm::DeviceId;
 
 class DataService : public NonCopyable {
 public:
-    DataService(DeviceId device_id,  uint16_t listen_port);
-}
+    DataService(DeviceId device_id, uint16_t listen_port) {}
+};
 
 } // namespace pancake_store::datanode::service

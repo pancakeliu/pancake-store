@@ -30,6 +30,11 @@ public:
         return instance;
     }
 
+    ErrorCode Init(const seastar::sstring &cluster_id) {
+        cluster_id_ = cluster_id;
+        return ErrorCode::PANCAKE_STORE_OK;
+    }
+
     // TODO(pancake): init, load all device info from master
     seastar::future<> Start(uint16_t listen_port);
 
@@ -37,12 +42,13 @@ private:
     ManagerService() = default;
     ~ManagerService() = default;
 
-    static ErrorCode addDevice(const AddDeviceRequest& request, AddDeviceResponse* response);
-    static ErrorCode delDevice(const DelDeviceRequest& request, DelDeviceResponse* response);
+    static seastar::future<ErrorCode> addDevice(void *ptr, const AddDeviceRequest& request, AddDeviceResponse* response);
+    static seastar::future<ErrorCode> delDevice(void *ptr, const DelDeviceRequest& request, DelDeviceResponse* response);
 
 private:
-    DatanodeDeviceServer rpc_server_;
+    DatanodeDeviceServer rpc_server_{};
     seastar::logger logger_{"manager_service"};
+    seastar::sstring cluster_id_;
 
     std::unordered_map<DeviceId, std::shared_ptr<ManagerService>> data_services_;
     seastar::shared_mutex mutex_;

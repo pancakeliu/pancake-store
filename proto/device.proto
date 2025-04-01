@@ -13,12 +13,25 @@ enum FSType {
 enum DeviceStatus {
   	DEVICE_STATUS_UNKNOWN = 0;
     DEVICE_STATUS_OK = 1;
-    DEVICE_STATUS_DOWN = 2;
-    DEVICE_STATUS_SLOW = 3;
+    DEVICE_STATUS_SLOW = 2;
+    DEVICE_STATUS_DOWN = 3;
+    DEVICE_STATUS_OUTING = 4;
+    DEVICE_STATUS_OUT = 5;
+}
+
+enum MaintainenceStatus {
+    MAINTAINENCE_STATUS_UNKNOWN = 0;
+    MAINTAINENCE_STATUS_NONE = 1;
+    MAINTAINENCE_STATUS_UPDATING = 2;
 }
 
 message DeviceInfo {
-		uint64 device_id = 1;
+    DeviceBaseInfo device_base_info = 1;
+    DeviceMutableInfo device_mutable_info = 2;
+}
+
+message DeviceBaseInfo {
+	uint64 device_id = 1;
     string datanode_id = 2;
     string ip = 3;
     uint32 port = 4;
@@ -26,10 +39,12 @@ message DeviceInfo {
     FSType fs_type = 6;
 }
 
+
 message DeviceMutableInfo {
     uint64 device_id = 1;
     uint64 device_total_size = 2;
     uint64 device_alloc_size = 3;
     uint64 device_used_size = 4;
-
+    MaintainenceStatus maintainence_status = 5;
+    DeviceStatus device_status = 6;
 }

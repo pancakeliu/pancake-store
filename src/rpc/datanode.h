@@ -33,8 +33,8 @@ using proto::service::datanode::ReadAtRequest;
 using proto::service::datanode::ReadAtResponse;
 
 // device manager rpc
-using AddDeviceHandler = std::function<ErrorCode(const AddDeviceRequest&, AddDeviceResponse*)>;
-using DelDeviceHandler = std::function<ErrorCode(const DelDeviceRequest&, DelDeviceResponse*)>;
+using AddDeviceHandler = std::function<seastar::future<ErrorCode>(void *ptr, const AddDeviceRequest&, AddDeviceResponse*)>;
+using DelDeviceHandler = std::function<seastar::future<ErrorCode>(void *ptr, const DelDeviceRequest&, DelDeviceResponse*)>;
 
 class DatanodeDeviceServer : public NonCopyable {
 public:
@@ -45,6 +45,7 @@ public:
 
     GET_RPC_METHOD_INLINE
 
+    void RegisterServicePtr(void *service_ptr);
     void RegisterAddDeviceHandler(AddDeviceHandler handler);
     void RegisterDelDeviceHandler(DelDeviceHandler handler);
 
@@ -52,6 +53,7 @@ private:
     seastar::rpc::protocol<Serializer> rpc_{Serializer{}};
     seastar::logger logger_{"rpc.datanode_device_server"};
 
+    void *service_ptr_{nullptr};
     AddDeviceHandler add_device_handler_;
     DelDeviceHandler del_device_handler_;
 };
@@ -60,12 +62,12 @@ private:
 #define DEL_DEVICE_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_DEL_DEVICE))
 
 // Datanode Server
-using AddExtentHandler = std::function<ErrorCode(const AddExtentRequest&, AddExtentResponse*)>;
-using DelExtentHandler = std::function<ErrorCode(const DelExtentRequest&, DelExtentResponse*)>;
-using SealExtentHandler = std::function<ErrorCode(const SealExtentRequest&, SealExtentResponse*)>;
-using ListExtentHandler = std::function<ErrorCode(const ListExtentsRequest&, ListExtentsResponse*)>;
-using WriteAtHandler = std::function<ErrorCode(const WriteAtRequest&, WriteAtResponse*)>;
-using ReadAtHandler = std::function<ErrorCode(const ReadAtRequest&, ReadAtResponse*)>;
+using AddExtentHandler = std::function<seastar::future<ErrorCode>(void *ptr, const AddExtentRequest&, AddExtentResponse*)>;
+using DelExtentHandler = std::function<seastar::future<ErrorCode>(void *ptr, const DelExtentRequest&, DelExtentResponse*)>;
+using SealExtentHandler = std::function<seastar::future<ErrorCode>(void *ptr, const SealExtentRequest&, SealExtentResponse*)>;
+using ListExtentHandler = std::function<seastar::future<ErrorCode>(void *ptr, const ListExtentsRequest&, ListExtentsResponse*)>;
+using WriteAtHandler = std::function<seastar::future<ErrorCode>(void *ptr, const WriteAtRequest&, WriteAtResponse*)>;
+using ReadAtHandler = std::function<seastar::future<ErrorCode>(void *ptr, const ReadAtRequest&, ReadAtResponse*)>;
 
 class DatanodeServer : public NonCopyable {
 public:
@@ -75,6 +77,8 @@ public:
     ~DatanodeServer() = default;
 
     GET_RPC_METHOD_INLINE
+
+    void RegisterServicePtr(void *service_ptr);
 
     void RegisterAddExtentHandler(AddExtentHandler handler);
     void RegisterDelExtentHandler(DelExtentHandler handler);
@@ -87,6 +91,7 @@ private:
     seastar::rpc::protocol<Serializer> rpc_{Serializer{}};
     seastar::logger logger_{"rpc.datanode_server"};
 
+    void *service_ptr_{nullptr};
     AddExtentHandler add_extent_handler_;
     DelExtentHandler del_extent_handler_;
     SealExtentHandler seal_extent_handler_;
