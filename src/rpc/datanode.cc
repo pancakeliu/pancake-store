@@ -49,7 +49,7 @@ void DatanodeDeviceServer::RegisterDelDeviceHandler(DelDeviceHandler handler) {
         });
 }
 
-void DatanodeExtentServer::RegisterAddExtentHandler(AddExtentHandler handler) {
+void DatanodeServer::RegisterAddExtentHandler(AddExtentHandler handler) {
     add_extent_handler_ = std::move(handler);
 
     rpc_.register_handler(DatanodeRpc::DATANODE_RPC_ADD_EXTENT,
@@ -70,7 +70,7 @@ void DatanodeExtentServer::RegisterAddExtentHandler(AddExtentHandler handler) {
         });
 }
 
-void DatanodeExtentServer::RegisterDelExtentHandler(DelExtentHandler handler) {
+void DatanodeServer::RegisterDelExtentHandler(DelExtentHandler handler) {
     del_extent_handler_ = std::move(handler);
 
     rpc_.register_handler(DatanodeRpc::DATANODE_RPC_DEL_EXTENT,
@@ -91,7 +91,7 @@ void DatanodeExtentServer::RegisterDelExtentHandler(DelExtentHandler handler) {
         });
 }
 
-void DatanodeExtentServer::RegisterSealExtentHandler(SealExtentHandler handler) {
+void DatanodeServer::RegisterSealExtentHandler(SealExtentHandler handler) {
     seal_extent_handler_ = std::move(handler);
 
     rpc_.register_handler(DatanodeRpc::DATANODE_RPC_SEAL_EXTENT,
@@ -112,7 +112,7 @@ void DatanodeExtentServer::RegisterSealExtentHandler(SealExtentHandler handler) 
         });
 }
 
-void DatanodeExtentServer::RegisterListExtentsHandler(ListExtentHandler handler) {
+void DatanodeServer::RegisterListExtentsHandler(ListExtentHandler handler) {
     list_extents_handler_ = std::move(handler);
 
     rpc_.register_handler(DatanodeRpc::DATANODE_RPC_LIST_EXTENTS,
@@ -133,23 +133,7 @@ void DatanodeExtentServer::RegisterListExtentsHandler(ListExtentHandler handler)
         });
 }
 
-auto DatanodeExtentClient::AddExtentCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_ADD_EXTENT);
-}
-
-auto DatanodeExtentClient::DelExtentCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_DEL_EXTENT);
-}
-
-auto DatanodeExtentClient::SealExtentCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_SEAL_EXTENT);
-}
-
-auto DatanodeExtentClient::ListExtentCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_LIST_EXTENTS);
-}
-
-void DatanodeRwServer::RegisterWriteAtHandler(WriteAtHandler handler) {
+void DatanodeServer::RegisterWriteAtHandler(WriteAtHandler handler) {
     write_at_handler_ = std::move(handler);
 
     rpc_.register_handler(DatanodeRpc::DATANODE_RPC_WRITE_AT,
@@ -170,7 +154,7 @@ void DatanodeRwServer::RegisterWriteAtHandler(WriteAtHandler handler) {
         });
 }
 
-void DatanodeRwServer::RegisterReadAtHandler(ReadAtHandler handler) {
+void DatanodeServer::RegisterReadAtHandler(ReadAtHandler handler) {
     read_at_handler_ = std::move(handler);
     rpc_.register_handler(DatanodeRpc::DATANODE_RPC_READ_AT,
         [this](seastar::sstring request_data) {
@@ -188,14 +172,6 @@ void DatanodeRwServer::RegisterReadAtHandler(ReadAtHandler handler) {
 
             return seastar::make_ready_future<seastar::sstring>(response.SerializeAsString());
         });
-}
-
-auto DatanodeRwClient::WriteAtCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_WRITE_AT);
-}
-
-auto DatanodeRwClient::ReadAtCaller() {
-    return rpc_.make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_READ_AT);
 }
 
 } // namespace pancake_store::rpc

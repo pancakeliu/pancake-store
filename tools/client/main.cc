@@ -20,9 +20,10 @@ int main(int argc, char** argv) {
         seastar::logger logger("tool.client");
 
         seastar::rpc::protocol<Serializer> rpc{Serializer{}};
-        auto caller = ADD_DEVICE_CALLER(rpc);
 
         client = std::make_shared<seastar::rpc::protocol<Serializer>::client>(rpc, seastar::socket_address(seastar::ipv4_addr{"127.0.0.1", 8888}));
+
+        auto caller = ADD_DEVICE_CALLER(rpc);
 
         AddDeviceRequest request;
         request.set_datanode_id("abc");

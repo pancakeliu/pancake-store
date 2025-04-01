@@ -59,18 +59,20 @@ private:
 #define ADD_DEVICE_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_ADD_DEVICE))
 #define DEL_DEVICE_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_DEL_DEVICE))
 
-// Datanode Extent Server
+// Datanode Server
 using AddExtentHandler = std::function<ErrorCode(const AddExtentRequest&, AddExtentResponse*)>;
 using DelExtentHandler = std::function<ErrorCode(const DelExtentRequest&, DelExtentResponse*)>;
 using SealExtentHandler = std::function<ErrorCode(const SealExtentRequest&, SealExtentResponse*)>;
 using ListExtentHandler = std::function<ErrorCode(const ListExtentsRequest&, ListExtentsResponse*)>;
+using WriteAtHandler = std::function<ErrorCode(const WriteAtRequest&, WriteAtResponse*)>;
+using ReadAtHandler = std::function<ErrorCode(const ReadAtRequest&, ReadAtResponse*)>;
 
-class DatanodeExtentServer : public NonCopyable {
+class DatanodeServer : public NonCopyable {
 public:
-    DatanodeExtentServer() {
+    DatanodeServer() {
         rpc_.set_logger(&logger_);
     }
-    ~DatanodeExtentServer() = default;
+    ~DatanodeServer() = default;
 
     GET_RPC_METHOD_INLINE
 
@@ -78,76 +80,27 @@ public:
     void RegisterDelExtentHandler(DelExtentHandler handler);
     void RegisterSealExtentHandler(SealExtentHandler handler);
     void RegisterListExtentsHandler(ListExtentHandler handler);
-
-private:
-    seastar::rpc::protocol<Serializer> rpc_{Serializer{}};
-    seastar::logger logger_{"rpc.datanode_extent_server"};
-
-    AddExtentHandler add_extent_handler_;
-    DelExtentHandler del_extent_handler_;
-    SealExtentHandler seal_extent_handler_;
-    ListExtentHandler list_extents_handler_;
-};
-
-class DatanodeExtentClient : public NonCopyable {
-public:
-    DatanodeExtentClient() {
-        rpc_.set_logger(&logger_);
-    }
-    ~DatanodeExtentClient() = default;
-
-    GET_RPC_METHOD_INLINE
-
-    auto AddExtentCaller();
-    auto DelExtentCaller();
-    auto SealExtentCaller();
-    auto ListExtentCaller();
-
-private:
-    seastar::rpc::protocol<Serializer> rpc_{Serializer{}};
-    seastar::logger logger_{"rpc.datanode_extent_client"};
-};
-
-// Datanode RW Server
-using WriteAtHandler = std::function<ErrorCode(const WriteAtRequest&, WriteAtResponse*)>;
-using ReadAtHandler = std::function<ErrorCode(const ReadAtRequest&, ReadAtResponse*)>;
-
-class DatanodeRwServer : public NonCopyable {
-public:
-    DatanodeRwServer() {
-        rpc_.set_logger(&logger_);
-    }
-    ~DatanodeRwServer() = default;
-
-    GET_RPC_METHOD_INLINE
-
     void RegisterWriteAtHandler(WriteAtHandler handler);
     void RegisterReadAtHandler(ReadAtHandler handler);
 
 private:
     seastar::rpc::protocol<Serializer> rpc_{Serializer{}};
-    seastar::logger logger_{"rpc.datanode_rw_server"};
+    seastar::logger logger_{"rpc.datanode_server"};
 
+    AddExtentHandler add_extent_handler_;
+    DelExtentHandler del_extent_handler_;
+    SealExtentHandler seal_extent_handler_;
+    ListExtentHandler list_extents_handler_;
     WriteAtHandler write_at_handler_;
     ReadAtHandler read_at_handler_;
 };
 
-class DatanodeRwClient : public NonCopyable {
-public:
-    DatanodeRwClient() {
-        rpc_.set_logger(&logger_);
-    }
-    ~DatanodeRwClient() = default;
-
-    GET_RPC_METHOD_INLINE
-
-    auto WriteAtCaller();
-    auto ReadAtCaller();
-
-private:
-    seastar::rpc::protocol<Serializer> rpc_{Serializer{}};
-    seastar::logger logger_{"rpc.datanode_rw_client"};
-};
+#define ADD_EXTENT_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_ADD_EXTENT))
+#define DEL_EXTENT_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_DEL_EXTENT))
+#define SEAL_EXTENT_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_SEAL_EXTENT))
+#define LIST_EXTENTS_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_LIST_EXTENTS))
+#define READ_AT_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_READ_AT))
+#define WRITE_AT_CALLER(rpc) ((rpc).make_client<seastar::sstring(seastar::sstring)>(DatanodeRpc::DATANODE_RPC_WRITE_AT))
 
 } // namespace pancake_store::rpc
 

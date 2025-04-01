@@ -6,10 +6,6 @@ message("datanode cmake..")
 #set(DATANODE_REDUNDANT_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/redundant)
 #add_subdirectory(${DATANODE_REDUNDANT_DIR})
 #
-## rpc caller module
-#set(DATANODE_RPC_CALLER_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/rpc_caller)
-#add_subdirectory(${DATANODE_RPC_CALLER_DIR})
-#
 # service module
 set(DATANODE_SERVICE_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/service)
 add_subdirectory(${DATANODE_SERVICE_DIR})

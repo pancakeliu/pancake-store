@@ -4,4 +4,12 @@ package proto.common;
 
 enum ErrorCode {
     PANCAKE_STORE_OK = 0;
+
+    // datanode error code 1xxxx
+
+    // master error code
+
+    // rpc caller error code 3xxxx
+    RPC_CALLER_INVOKE_FAILED = 30001;
+    RPC_CALLER_RESPONSE_PARSE_FAILED = 30002;
 };
