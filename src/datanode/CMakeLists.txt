@@ -2,6 +2,10 @@
 
 message("datanode cmake..")
 
+# comm module
+set(DATANODE_COMM_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/comm)
+add_subdirectory(${DATANODE_COMM_DIR})
+
 # redundant module
 #set(DATANODE_REDUNDANT_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/redundant)
 #add_subdirectory(${DATANODE_REDUNDANT_DIR})
@@ -36,6 +40,7 @@ target_include_directories(
 target_link_libraries(
         pc-datanode
         PUBLIC
+        pc-datanode-comm
         pc-datanode-service
         pc-rpc
         pc-proto

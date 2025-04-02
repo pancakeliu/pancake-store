@@ -9,6 +9,8 @@ namespace pancake_store::datanode::service {
 using pancake_store::rpc::Serializer;
 
 seastar::future<> ManagerService::Start(uint16_t listen_port) {
+    assert(seastar::this_shard_id() == main_worker_cpu_id);
+
     logger_.info("Starting manager service");
 
     rpc_server_.RegisterServicePtr(this);
@@ -18,12 +20,14 @@ seastar::future<> ManagerService::Start(uint16_t listen_port) {
     auto server = std::make_unique<seastar::rpc::protocol<Serializer>::server>(rpc_server_.GetRpc(), seastar::socket_address(seastar::ipv4_addr{"0.0.0.0", listen_port}));
     return seastar::do_with(std::move(server), [this](auto &server) {
         return seastar::keep_doing([this] {
-            return seastar::sleep(std::chrono::seconds(1));
+            return seastar::sleep(std::chrono::seconds(60));
         });
     });
 }
 
 seastar::future<ErrorCode> ManagerService::addDevice(void *ptr, const AddDeviceRequest& request, AddDeviceResponse* response) {
+    assert(seastar::this_shard_id() == main_worker_cpu_id);
+
     auto *this_ptr = static_cast<ManagerService *>(ptr);
     this_ptr->logger_.info("add device. request:{}", request.ShortDebugString());
 
@@ -51,6 +55,8 @@ seastar::future<ErrorCode> ManagerService::addDevice(void *ptr, const AddDeviceR
 }
 
 seastar::future<ErrorCode> ManagerService::delDevice(void *this_ptr, const DelDeviceRequest& request, DelDeviceResponse* response) {
+    assert(seastar::this_shard_id() == main_worker_cpu_id);
+
     Instance().logger_.info("del device invoke success...");
     return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
 }

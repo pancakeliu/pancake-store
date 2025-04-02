@@ -31,12 +31,13 @@ message DeviceInfo {
 }
 
 message DeviceBaseInfo {
-	uint64 device_id = 1;
-    string datanode_id = 2;
-    string ip = 3;
-    uint32 port = 4;
-    string device_path = 5;
-    FSType fs_type = 6;
+	  uint64 device_id = 1;
+    string device_uuid = 2;
+    string datanode_id = 3;
+    string ip = 4;
+    uint32 port = 5;
+    string device_path = 6;
+    FSType fs_type = 7;
 }
 
 

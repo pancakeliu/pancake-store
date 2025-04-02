@@ -5,9 +5,11 @@ package proto.common;
 enum ErrorCode {
     PANCAKE_STORE_OK = 0;
     PANCAKE_STORE_CLUSTER_ID_NOT_MATCH = 1;
+    PANCAKE_STORE_YAML_CONFIG_INVALID = 2;
+    PANCAKE_STORE_CONFIG_INVALID = 3;
 
     // datanode error code 1xxxx
-    DATANODE_DEVICE_ALREAY_EXISTS = 10001;
+    DATANODE_DEVICE_ALREADY_EXISTS = 10001;
 
     // master error code
 
