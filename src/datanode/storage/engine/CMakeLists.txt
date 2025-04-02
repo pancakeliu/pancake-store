@@ -2,7 +2,7 @@
 
 # storage pancake engine directory
 set(STORAGE_PANCAKE_ENGINE_DIR ${DATANODE_STORAGE_ENGINE_DIR}/pancake)
-add_subdirectory(${DATANODE_STORAGE_ENGINE_DIR})
+add_subdirectory(${STORAGE_PANCAKE_ENGINE_DIR})
 
 file(
         GLOB

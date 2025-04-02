@@ -6,14 +6,17 @@
 
 namespace pancake_store::datanode::storage {
 
-class Storage : public comm::NonCopyable {
+using pancake_store::comm::NonCopyable;
+
+class PancakeCache : NonCopyable {
 public:
-    Storage() = default;
-    ~Storage() = default;
-private:
+    PancakeCache() = default;
+    ~PancakeCache() = default;
+
+    ErrorCode Init(uint64_t cache_size);
 
 private:
-    Engine engine_;
+    uint64_t cache_size_;
 };
 
 } // namespace pancake_store::datanode::storage
