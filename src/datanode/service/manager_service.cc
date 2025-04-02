@@ -43,7 +43,8 @@ seastar::future<ErrorCode> ManagerService::addDevice(void *ptr, const AddDeviceR
         }
 
         // TODO: codes.
-        this_ptr->logger_.info("start to init device:{}", request.disk_id());
+        this_ptr->logger_.info("start to init device:{}, request:{}",
+            request.disk_id(), request.ShortDebugString());
 
         return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
     });
