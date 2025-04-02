@@ -9,7 +9,10 @@ enum ErrorCode {
     PANCAKE_STORE_CONFIG_INVALID = 3;
 
     // datanode error code 1xxxx
-    DATANODE_DEVICE_ALREADY_EXISTS = 10001;
+    // datanode service error codes
+    DATANODE_SERVICE_DEVICE_ALREADY_EXISTS = 10001;
+    DATANODE_SERVICE_DATANODE_ID_NOT_MATCH = 10002;
+    DATANODE_SERVICE_REQUEST_ARGUMENT_INVALID = 10003;
 
     // master error code
 

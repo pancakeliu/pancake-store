@@ -29,7 +29,7 @@ int main(const int argc, char **argv) {
     return app.run(argc, argv, [&] {
         const auto &config = app.configuration();
         if (config["version"].as<bool>()) {
-            // TODO: print datanode version.
+            // TODO(pancake): print datanode version.
             return seastar::make_ready_future<>();
         }
         const auto config_file = config["config"].as<std::string>();
