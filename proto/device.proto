@@ -10,6 +10,13 @@ enum FSType {
     FS_TYPE_PANCAKE_BY_SPDK = 3;
 }
 
+enum DeviceType {
+    DEVICE_TYPE_UNKNOWN = 0;
+    DEVICE_TYPE_HDD = 1;
+    DEVICE_TYPE_SSD = 2;
+    DEVICE_TYPE_NVME_SSD = 3;
+}
+
 enum DeviceStatus {
   	DEVICE_STATUS_UNKNOWN = 0;
     DEVICE_STATUS_OK = 1;
@@ -19,10 +26,10 @@ enum DeviceStatus {
     DEVICE_STATUS_OUT = 5;
 }
 
-enum MaintainenceStatus {
-    MAINTAINENCE_STATUS_UNKNOWN = 0;
-    MAINTAINENCE_STATUS_NONE = 1;
-    MAINTAINENCE_STATUS_UPDATING = 2;
+enum MaintenanceStatus {
+    MAINTENANCE_STATUS_UNKNOWN = 0;
+    MAINTENANCE_STATUS_NONE = 1;
+    MAINTENANCE_STATUS_UPDATING = 2;
 }
 
 message DeviceInfo {
@@ -34,18 +41,19 @@ message DeviceBaseInfo {
 	  uint64 device_id = 1;
     string device_uuid = 2;
     string datanode_id = 3;
-    string ip = 4;
-    uint32 port = 5;
-    string device_path = 6;
-    FSType fs_type = 7;
+    string device_type = 4;
+    string ip = 5;
+    uint32 port = 6;
+    string device_path = 7;
+    FSType fs_type = 8;
+    uint64 device_capacity_size = 9;
+    int64  create_time = 10;
 }
-
 
 message DeviceMutableInfo {
     uint64 device_id = 1;
-    uint64 device_total_size = 2;
-    uint64 device_alloc_size = 3;
-    uint64 device_used_size = 4;
-    MaintainenceStatus maintainence_status = 5;
-    DeviceStatus device_status = 6;
+    uint64 device_alloc_size = 2;
+    uint64 device_used_size = 3;
+    MaintenanceStatus maintenance_status = 4;
+    DeviceStatus device_status = 5;
 }

@@ -2,15 +2,23 @@
 #pragma once
 
 #include "src/datanode/storage/engine/engine.h"
+#include "src/datanode/storage/engine/pancake/pancake_stats.h"
+
+#include "proto/device.pb.h"
 
 namespace pancake_store::datanode::storage {
+
+using proto::device::DeviceStatus;
+using proto::device::DeviceType;
 
 class PancakeEngine : public AbstractEngine {
 public:
     PancakeEngine() = default;
     ~PancakeEngine() override = default;
 
-    ErrorCode Init(DeviceInfo device_info) override;
+    ErrorCode MakeFS(const MakeFSRequest &request, MakeFSResponse *response) override;
+    ErrorCode Mount(const MountRequest &request, MountResponse *response) override;
+
     ErrorCode ReadAt(ExtentId ext_id, uint32_t offset, uint32_t size) override;
     ErrorCode WriteAt(ExtentId ext_id, const seastar::sstring &data, uint32_t offset) override;
     ErrorCode AddExtent(ExtentInfo ext_info) override;
@@ -24,11 +32,15 @@ public:
     uint64_t GetTotalCapacity() override;
     uint64_t GetFreeCapacity() override;
     uint64_t GetUsedCapacity() override;
-    uint64_t GetAllocateCapactity() override;
+    uint64_t GetAllocateCapacity() override;
 
 private:
-    // TODO: de-DeviceInfo
-    DeviceInfo device_info_;
+    uint64_t device_id_{0};
+    seastar::sstring device_uuid_;
+    seastar::sstring device_path_;
+    DeviceType device_type_{DeviceType::DEVICE_TYPE_UNKNOWN};
+
+    PancakeStats pancake_stats_;
 };
 
 } // namespace pancake_store::datanode::storage

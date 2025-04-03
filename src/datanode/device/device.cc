@@ -1,5 +1,7 @@
-//
-// Created by pancake on 4/2/25.
-//
 
-#include "device.h"
+#include "src/datanode/storage/storage.h"
+
+namespace pancake_store::datanode::device {
+
+
+} // namespace pancake_store::datanode::device
