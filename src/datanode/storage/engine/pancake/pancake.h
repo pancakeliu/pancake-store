@@ -6,6 +6,8 @@
 
 #include "proto/device.pb.h"
 
+#include <seastar/util/log.hh>
+
 namespace pancake_store::datanode::storage {
 
 using proto::device::DeviceStatus;
@@ -41,6 +43,8 @@ private:
     DeviceType device_type_{DeviceType::DEVICE_TYPE_UNKNOWN};
 
     PancakeStats pancake_stats_;
+
+    seastar::logger logger_{"pancake_engine"};
 };
 
 } // namespace pancake_store::datanode::storage

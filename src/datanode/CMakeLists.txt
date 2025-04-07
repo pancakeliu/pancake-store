@@ -19,10 +19,6 @@ add_subdirectory(${DATANODE_SERVICE_DIR})
 set(DATANODE_STORAGE_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/storage)
 add_subdirectory(${DATANODE_STORAGE_DIR})
 
-# device module
-set(DATANODE_DEVICE_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/device)
-add_subdirectory(${DATANODE_DEVICE_DIR})
-
 ## transfer module
 #set(DATANODE_TRANSFER_DIR ${PANCAKE_STORE_SRC_DATANODE_DIR}/transfer)
 #add_subdirectory(${DATANODE_TRANSFER_DIR})
