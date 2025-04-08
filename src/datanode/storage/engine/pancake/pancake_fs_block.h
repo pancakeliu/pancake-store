@@ -19,6 +19,8 @@ constexpr int k_block_size = k_block_data_size + k_block_footer_size;
 constexpr int k_super_block_index = 0;
 constexpr int k_backup_super_block_size = 1;
 
+constexpr uint32_t k_block_magic = 0x20250430;
+
 struct SuperBlock {
 public:
     seastar::sstring Serialize();
@@ -60,18 +62,13 @@ public:
 using SuperBlockBackup = SuperBlock;
 
 struct BlockFooter {
-public:
-    seastar::sstring Serialize();
-    ErrorCode Deserialize(const seastar::sstring& data);
-
-public:
     uint32_t magic_;
     uint8_t version_;
     uint8_t flag_; // not used
     uint16_t length_;
     uint64_t extent_id_;
-    uint32_t crc_;
     uint8_t reserved_[12];
+    uint32_t crc_;
 };
 
 static_assert(sizeof(BlockFooter) == k_block_footer_size);
@@ -82,22 +79,32 @@ struct JournalBlockFooter {
     uint8_t flag_; // not used
     uint16_t length_;
     uint64_t extent_id_;
-    uint32_t crc_;
+    uint64_t transaction_id_;
     uint8_t  commited_flag_;
     uint8_t reserved_[3];
-    uint64_t transaction_id_;
+    uint32_t crc_;
 };
 
 static_assert(sizeof(JournalBlockFooter) == sizeof(BlockFooter));
 
-struct Block {
+struct DataBlock {
+public:
+    seastar::sstring Serialize();
+    ErrorCode Deserialize(const seastar::sstring& data);
+
+public:
     char data_[k_block_data_size];
     BlockFooter footer_;
 };
 
-static_assert(sizeof(Block) == k_block_size);
+static_assert(sizeof(DataBlock) == k_block_size);
 
 struct JournalBlock {
+public:
+    seastar::sstring Serialize();
+    ErrorCode Deserialize(const seastar::sstring& data);
+
+public:
     char old_data_[k_block_data_size];
     JournalBlockFooter journal_footer_;
 };
@@ -105,6 +112,11 @@ struct JournalBlock {
 static_assert(sizeof(JournalBlock) == k_block_size);
 
 struct ExtentHeaderBlock {
+public:
+    seastar::sstring Serialize();
+    ErrorCode Deserialize(const seastar::sstring& data);
+
+public:
     uint32_t magic_;
     uint8_t version_;
     uint8_t shard_id_;
