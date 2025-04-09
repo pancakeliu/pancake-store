@@ -19,7 +19,7 @@ private:
     uint64_t block_size_; // 4k
     uint32_t journal_block_count_;
 
-    ExtentBlockManager extent_block_manager_;
+    //ExtentBlockManager extent_block_manager_;
 
 };
 

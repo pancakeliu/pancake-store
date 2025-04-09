@@ -10,7 +10,7 @@ using pancake_store::datanode::comm::DeviceFunctions;
 using pancake_store::comm::IsNotOk;
 using pancake_store::comm::ErrorCodeName;
 
-ErrorCode PancakeEngine::MakeFS(const MakeFSRequest &request, MakeFSResponse *response) override {
+ErrorCode PancakeEngine::MakeFS(const MakeFSRequest &request, MakeFSResponse *response) {
     if (request.fs_type_ != FSType::FS_TYPE_PANCAKE_BY_RAW) {
         logger_.error("code error!! fs_type not pancake.");
         return ErrorCode::PANCAKE_STORE_CODE_ERROR;
@@ -51,59 +51,59 @@ ErrorCode PancakeEngine::MakeFS(const MakeFSRequest &request, MakeFSResponse *re
     return ErrorCode::PANCAKE_STORE_OK;
 }
 
-ErrorCode PancakeEngine::Mount(const MountRequest &request, MountResponse *response) override {
+ErrorCode PancakeEngine::Mount(const MountRequest &request, MountResponse *response) {
 
 }
 
-ErrorCode PancakeEngine::ReadAt(ExtentId ext_id, uint32_t offset, uint32_t size) override {
+ErrorCode PancakeEngine::ReadAt(ExtentId ext_id, uint32_t offset, uint32_t size) {
 
 }
 
-ErrorCode PancakeEngine::WriteAt(ExtentId ext_id, const seastar::sstring &data, uint32_t offset) override {
+ErrorCode PancakeEngine::WriteAt(ExtentId ext_id, const seastar::sstring &data, uint32_t offset) {
 
 }
 
-ErrorCode PancakeEngine::AddExtent(ExtentInfo ext_info) override {
+ErrorCode PancakeEngine::AddExtent(ExtentInfo ext_info) {
 
 }
 
-ErrorCode PancakeEngine::DelExtent(ExtentId ext_id) override {
+ErrorCode PancakeEngine::DelExtent(ExtentId ext_id) {
 
 }
 
-ErrorCode PancakeEngine::RecoverExtent(ExtentId ext_id) override {
+ErrorCode PancakeEngine::RecoverExtent(ExtentId ext_id) {
 
 }
 
-FSType PancakeEngine::GetFSType() override {
+FSType PancakeEngine::GetFSType() {
 
 }
 
-uint64_t PancakeEngine::DeviceId() override {
+uint64_t PancakeEngine::DeviceId() {
 
 }
 
-std::string PancakeEngine::DeviceUUID() override {
+std::string PancakeEngine::DeviceUUID() {
 
 }
 
-std::string PancakeEngine::DevicePath() override {
+std::string PancakeEngine::DevicePath() {
 
 }
 
-uint64_t PancakeEngine::GetTotalCapacity() override {
+uint64_t PancakeEngine::GetTotalCapacity() {
 
 }
 
-uint64_t PancakeEngine::GetFreeCapacity() override {
+uint64_t PancakeEngine::GetFreeCapacity() {
 
 }
 
-uint64_t PancakeEngine::GetUsedCapacity() override {
+uint64_t PancakeEngine::GetUsedCapacity() {
 
 }
 
-uint64_t PancakeEngine::GetAllocateCapacity() override {
+uint64_t PancakeEngine::GetAllocateCapacity() {
 
 }
 

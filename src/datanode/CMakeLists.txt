@@ -42,5 +42,4 @@ target_link_libraries(
         pc-proto
         Seastar::seastar
         protobuf
-        stdc++_coroutine
 )
