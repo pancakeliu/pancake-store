@@ -11,11 +11,10 @@ include_directories(
         ${SEASTAR_INCLUDE}
 )
 
-find_package (Seastar REQUIRED)
-
 add_library(pc-datanode-pancake-engine OBJECT ${STORAGE_PANCAKE_ENGINE_DIR_SOURCES_AND_HEADERS})
 target_link_libraries(
         pc-datanode-pancake-engine
         PUBLIC
         Seastar::seastar
+        stdc++_coroutine
 )

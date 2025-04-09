@@ -14,8 +14,11 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE release)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pipe -W -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -W -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -fPIC -fno-omit-frame-pointer")
+
+# enable c++20 seastar coroutine
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines -DSEASTAR_COROUTINES_ENABLED")
 
 if(CMAKE_BUILD_TYPE MATCHES debug-asan)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fsanitize=address -static-libasan")
@@ -30,7 +33,7 @@ elseif(CMAKE_BUILD_TYPE MATCHES debug)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-inline -fprofile-instr-generate -fcoverage-mapping")
     endif()
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -DNDEBUG")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -DNDEBUG")
 endif()
 
 execute_process(
@@ -79,6 +82,9 @@ else()
     add_subdirectory(${PANCAKE_STORE_THIRD_PARTY_DIR})
 
     set(Seastar_DIR "${PANCAKE_STORE_DEPS_DIR}/seastar/lib/cmake/Seastar")
+
+    # find seastar
+    find_package(Seastar REQUIRED)
 
     # src directory
     set(PANCAKE_STORE_SRC_DIR ${CMAKE_SOURCE_DIR}/src)

@@ -11,8 +11,6 @@ include_directories(
         ${SEASTAR_INCLUDE}
 )
 
-find_package (Seastar REQUIRED)
-
 add_library(pc-datanode-service OBJECT ${DATANODE_SERVICE_SOURCES_AND_HEADERS})
 target_link_libraries(
         pc-datanode-service

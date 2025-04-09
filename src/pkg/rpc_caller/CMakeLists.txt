@@ -11,8 +11,6 @@ include_directories(
         ${SEASTAR_INCLUDE}
 )
 
-find_package (Seastar REQUIRED)
-
 add_library(pc-pkg-rpc-caller OBJECT ${PKG_RPC_CALLER_SOURCES_AND_HEADERS})
 target_link_libraries(
         pc-pkg-rpc-caller

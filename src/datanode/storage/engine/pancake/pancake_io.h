@@ -6,6 +6,7 @@
 #include "src/comm/alias.h"
 
 #include <seastar/core/seastar.hh>
+#include <seastar/util/log.hh>
 
 namespace pancake_store::datanode::storage {
 
@@ -18,13 +19,14 @@ public:
     PancakeIO() = default;
     ~PancakeIO();
 
-    ErrorCode Init(const seastar::sstring &device_uuid_);
+    seastar::future<ErrorCode> Init(const seastar::sstring &device_path, DeviceId device_id);
 
 private:
-    seastar::sstring device_uuid_;
     seastar::sstring device_path_;
     DeviceId device_id_{0};
 
+    std::shared_ptr<seastar::file> device_fd_;
+    seastar::logger logger_{"pancake_io"};
 };
 
 } // namespace pancake_store::datanode::storage

@@ -45,8 +45,8 @@ ErrorCode PancakeEngine::MakeFS(const MakeFSRequest &request, MakeFSResponse *re
         return device_size_res.first;
     }
 
+    // init pancake io
 
-    // save uuid
 
     return ErrorCode::PANCAKE_STORE_OK;
 }

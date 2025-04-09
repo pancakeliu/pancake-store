@@ -11,8 +11,6 @@ target_compile_options(pc-client BEFORE PRIVATE
         -Wno-c++23-extensions
 )
 
-find_package(Seastar REQUIRED)
-
 target_link_libraries(
         pc-client
         PUBLIC

@@ -15,8 +15,6 @@ include_directories(
         ${SEASTAR_INCLUDE}
 )
 
-find_package (Seastar REQUIRED)
-
 add_library(pc-datanode-storage-engine OBJECT ${DATANODE_STORAGE_ENGINE_SOURCES_AND_HEADERS})
 target_link_libraries(
         pc-datanode-storage-engine

@@ -27,8 +27,6 @@ add_subdirectory(${DATANODE_STORAGE_DIR})
 add_executable(pc-datanode ${PANCAKE_STORE_SRC_DATANODE_DIR}/main.cc)
 add_dependencies(pc-datanode DepsFinished)
 
-find_package(Seastar REQUIRED)
-
 target_include_directories(
         pc-datanode
         PUBLIC
@@ -44,4 +42,5 @@ target_link_libraries(
         pc-proto
         Seastar::seastar
         protobuf
+        stdc++_coroutine
 )
