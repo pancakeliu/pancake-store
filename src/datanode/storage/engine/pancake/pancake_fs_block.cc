@@ -469,7 +469,7 @@ ErrorCode JournalBlock::Deserialize(const seastar::sstring& data) {
     return ErrorCode::PANCAKE_STORE_OK;
 }
 
-seastar::sstring ExtentHeaderBlock::Serialize() {
+seastar::sstring ExtentHeaderBlock::Serialize() const {
     std::string result;
     result.reserve(k_block_size);
 

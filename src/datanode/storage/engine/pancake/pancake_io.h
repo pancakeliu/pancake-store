@@ -24,8 +24,6 @@ public:
     seastar::future<ErrorCode> ReadAt(uint64_t offset, uint64_t read_len, seastar::sstring *read_buf);
     seastar::future<ErrorCode> WriteAt(uint64_t offset, const seastar::sstring &write_buf);
 
-    static inline bool IsBlockAlign(uint64_t val);
-
 private:
     seastar::sstring device_path_;
     DeviceId device_id_{0};

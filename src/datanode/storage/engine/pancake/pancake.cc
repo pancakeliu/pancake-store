@@ -1,5 +1,6 @@
 
 #include "src/datanode/storage/engine/pancake/pancake.h"
+#include "src/datanode/storage/engine/pancake/pancake_comm.h"
 #include "src/datanode/comm/device.h"
 
 #include <filesystem>

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "src/comm/error_code.h"
+#include "src/datanode/storage/engine/pancake/pancake_comm.h"
 
 #include <seastar/core/seastar.hh>
 #include <cstdint>
@@ -9,11 +10,6 @@
 namespace pancake_store::datanode::storage {
 
 using pancake_store::comm::ErrorCode;
-
-// NOTICE: k_data_size + k_footer_size = 4096 = 4KB
-constexpr int k_block_data_size = 4064;
-constexpr int k_block_footer_size = 32;
-constexpr int k_block_size = k_block_data_size + k_block_footer_size;
 
 // super block
 constexpr int k_super_block_index = 0;
@@ -87,6 +83,13 @@ struct JournalBlockFooter {
 
 static_assert(sizeof(JournalBlockFooter) == sizeof(BlockFooter));
 
+struct BitMapBlock {
+    uint8_t bit_map_[k_block_data_size];
+    BlockFooter footer_;
+};
+
+static_assert(sizeof(BitMapBlock) == k_block_size);
+
 struct DataBlock {
 public:
     seastar::sstring Serialize();
@@ -113,7 +116,7 @@ static_assert(sizeof(JournalBlock) == k_block_size);
 
 struct ExtentHeaderBlock {
 public:
-    seastar::sstring Serialize();
+    seastar::sstring Serialize() const;
     ErrorCode Deserialize(const seastar::sstring& data);
 
 public:

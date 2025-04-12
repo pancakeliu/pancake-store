@@ -2,7 +2,7 @@
 #pragma once
 
 #include "src/datanode/storage/engine/engine.h"
-#include "src/datanode/storage/engine/pancake/pancake_stats.h"
+#include "src/datanode/storage/engine/pancake/pancake_fs.h"
 
 #include "proto/device.pb.h"
 
@@ -42,7 +42,7 @@ private:
     seastar::sstring device_path_;
     DeviceType device_type_{DeviceType::DEVICE_TYPE_UNKNOWN};
 
-    PancakeStats pancake_stats_;
+    PancakeFS pancake_fs_;
 
     seastar::logger logger_{"pancake_engine"};
 };

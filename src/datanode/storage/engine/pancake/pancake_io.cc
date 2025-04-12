@@ -22,14 +22,14 @@ seastar::future<ErrorCode> PancakeIO::Init(const seastar::sstring &device_path, 
 }
 
 seastar::future<ErrorCode> PancakeIO::ReadAt(uint64_t offset, uint64_t read_len, seastar::sstring *read_buf) {
-    if (!IsBlockAlign(offset) || !IsBlockAlign(read_len)) {
+    if (!PancakeComm::IsBlockAlign(offset) || !PancakeComm::IsBlockAlign(read_len)) {
         logger_.error("code error!! offset:{} or read_len:{} not block aligned", offset, read_len);
         return seastar::make_ready_future<ErrorCode>(ErrorCode::DATANODE_STORAGE_NOT_BLOCK_ALIGNED);
     }
 
     return device_fd_->dma_read_exactly<char>(offset, read_len)
         .then([this, read_buf](seastar::temporary_buffer<char> buf) {
-            // todo
+            // TODO: zero copy
             read_buf->append(buf.get(), buf.size());
             return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
         })
@@ -59,10 +59,6 @@ seastar::future<ErrorCode> PancakeIO::WriteAt(uint64_t offset, const seastar::ss
             logger_.error("write_at got exception:{}, device:{}", ex, device_path_);
             return seastar::make_ready_future<ErrorCode>(ErrorCode::DATANODE_STORAGE_IO_WRITE_AT_FAILED);
         });
-}
-
-inline bool PancakeIO::IsBlockAlign(const uint64_t val) {
-    return val % k_block_size == 0;
 }
 
 } // namespace pancake_store::datanode::storage
