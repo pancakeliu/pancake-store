@@ -40,7 +40,7 @@ seastar::future<ErrorCode> PancakeIO::ReadAt(uint64_t offset, uint64_t read_len,
 }
 
 seastar::future<ErrorCode> PancakeIO::WriteAt(uint64_t offset, const seastar::sstring &write_buf) {
-    if (!IsBlockAlign(offset) || !IsBlockAlign(write_buf.size())) {
+    if (!PancakeComm::IsBlockAlign(offset) || !PancakeComm::IsBlockAlign(write_buf.size())) {
         logger_.error("code error!! offset:{} or write_buf:{} not block aligned.",
             offset, write_buf.size());
         return seastar::make_ready_future<ErrorCode>(ErrorCode::DATANODE_STORAGE_NOT_BLOCK_ALIGNED);

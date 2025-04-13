@@ -75,6 +75,9 @@ seastar::future<ErrorCode> ExtentBitMap::AddExtent(const ExtentHeaderBlock &ext_
         }
 
         // update extent bitmap block
+        auto bitmap_block = cloneBitMapBlockWithoutLock(ext_block_index);
+        // set footer
+        bitmap_block.footer_
 
         return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
     });
@@ -94,6 +97,31 @@ seastar::future<uint32_t> ExtentBitMap::CurrentFreeCount() {
     return seastar::with_lock(mutex_, [this] {
         return seastar::make_ready_future<uint32_t>(extent_block_count_ - used_cnt_);
     });
+}
+
+BitMapBlock ExtentBitMap::cloneBitMapBlockWithoutLock(uint32_t ext_block_index) {
+    BitMapBlock bitmap_block{};
+    memset(&bitmap_block, 0, sizeof(bitmap_block));
+
+    const int block_index = static_cast<int>(ext_block_index / (k_block_data_size * sizeof(uint8_t)));
+    const int start = block_index * static_cast<int>(k_block_data_size * sizeof(uint8_t));
+    int end = start + static_cast<int>(k_block_data_size * sizeof(uint8_t));
+    end = std::min(end, static_cast<int>(extent_block_count_));
+
+    for (int i = start; i < end; i++) {
+        int inner_index = (i - start) / static_cast<int>(sizeof(uint8_t));
+        int inner_offset = (i - start) % static_cast<int>(sizeof(uint8_t));
+
+        // false
+        if (!bitmap_[i]) {
+            bitmap_block.bitmap_[inner_index] &= ~(1 << inner_offset);
+            continue;
+        }
+        // ture
+        bitmap_block.bitmap_[inner_index] |= (1 << inner_offset);
+    }
+
+    return bitmap_block;
 }
 
 } // namespace pancake_store::datanode::storage

@@ -64,7 +64,9 @@ struct BlockFooter {
     uint16_t length_;
     uint64_t extent_id_;
     uint8_t reserved_[12];
-    uint32_t crc_;
+
+private:
+    uint32_t crc_{0};
 };
 
 static_assert(sizeof(BlockFooter) == k_block_footer_size);
@@ -84,7 +86,12 @@ struct JournalBlockFooter {
 static_assert(sizeof(JournalBlockFooter) == sizeof(BlockFooter));
 
 struct BitMapBlock {
-    uint8_t bit_map_[k_block_data_size];
+public:
+    seastar::sstring Serialize();
+    ErrorCode Deserialize(const seastar::sstring& data);
+
+public:
+    uint8_t bitmap_[k_block_data_size];
     BlockFooter footer_;
 };
 

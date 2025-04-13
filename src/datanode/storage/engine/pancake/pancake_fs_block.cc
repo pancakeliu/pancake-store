@@ -240,6 +240,113 @@ ErrorCode SuperBlock::Deserialize(const seastar::sstring& data) {
     return ErrorCode::PANCAKE_STORE_OK;
 }
 
+seastar::sstring BitMapBlock::Serialize() {
+    std::string result;
+    result.reserve(k_block_size);
+
+    auto append_data = [&result](const void* data, const size_t size) {
+        result.append(static_cast<const char*>(data), size);
+    };
+
+    // append bitmap
+    append_data(&bitmap_, sizeof(bitmap_));
+
+    // append footer
+    footer_.magic_ = k_block_magic;
+    const uint32_t be_magic = seastar::net::hton(footer_.magic_);
+    append_data(&be_magic, sizeof(be_magic));
+
+    append_data(&footer_.version_, sizeof(footer_.version_));
+    append_data(&footer_.flag_, sizeof(footer_.flag_));
+
+    const uint16_t be_length = seastar::net::hton(footer_.length_);
+    append_data(&be_length, sizeof(be_length));
+
+    const uint64_t be_extent_id = seastar::net::hton(footer_.extent_id_);
+    append_data(&be_extent_id, sizeof(be_extent_id));
+
+    append_data(&footer_.reserved_, sizeof(footer_.reserved_));
+
+    footer_.crc_ = CRC::CRC32(result.data(), result.size());
+    const uint32_t be_crc = seastar::net::hton(footer_.crc_);
+    append_data(&be_crc, sizeof(be_crc));
+
+    assert(result.size() == k_block_size);
+
+    return result;
+}
+
+ErrorCode BitMapBlock::Deserialize(const seastar::sstring& data) {
+if (data.size() != k_block_size) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_SIZE_ILLEGAL;
+    }
+
+    const char* ptr = data.data();
+    size_t remaining = data.size();
+
+    auto read_data = [&ptr, &remaining](void* dest, const size_t size) -> bool {
+        if (remaining < size) {
+            return false;
+        }
+        memcpy(dest, ptr, size);
+        ptr += size;
+        remaining -= size;
+        return true;
+    };
+
+    // bitmap data
+    if (!read_data(bitmap_, sizeof(bitmap_))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+
+    // footer deserialize
+    uint32_t be_magic;
+    if (!read_data(&be_magic, sizeof(be_magic))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+    footer_.magic_ = seastar::net::ntoh(be_magic);
+    if (footer_.magic_ != k_block_magic) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_MAGIC_ILLEGAL;
+    }
+
+    if (!read_data(&footer_.version_, sizeof(footer_.version_))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+
+    if (!read_data(&footer_.flag_, sizeof(footer_.flag_))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+
+    uint16_t be_length;
+    if (!read_data(&be_length, sizeof(be_length))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+    footer_.length_ = seastar::net::ntoh(be_length);
+
+    uint64_t be_extent_id;
+    if (!read_data(&be_extent_id, sizeof(be_extent_id))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+    footer_.extent_id_ = seastar::net::ntoh(be_extent_id);
+
+    if (!read_data(&footer_.reserved_, sizeof(footer_.reserved_))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+
+    uint32_t be_crc;
+    if (!read_data(&be_crc, sizeof(be_crc))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+
+    footer_.crc_ = seastar::net::ntoh(be_crc);
+
+    if (const uint32_t calculated_crc = CRC::CRC32(data.data(), ptr - data.data() - sizeof(footer_.crc_)); calculated_crc != footer_.crc_) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_CRC_MISMATCH;
+    }
+
+    return ErrorCode::PANCAKE_STORE_OK;
+}
+
 seastar::sstring DataBlock::Serialize() {
     std::string result;
     result.reserve(k_block_size);

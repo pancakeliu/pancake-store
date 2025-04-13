@@ -26,9 +26,9 @@ public:
     seastar::future<uint32_t> CurrentFreeCount();
 
 private:
+    // NOTICE:
+    BitMapBlock cloneBitMapBlockWithoutLock(uint32_t ext_block_index);
 
-
-private:
     std::shared_ptr<PancakeIO> pancake_io_;
 
     uint64_t offset_{0};
