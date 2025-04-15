@@ -1,9 +1,12 @@
 
 #include "src/datanode/storage/engine/pancake/pancake.h"
 #include "src/datanode/storage/engine/pancake/pancake_comm.h"
+#include "src/datanode/storage/engine/pancake/pancake_layout.h"
 #include "src/datanode/comm/device.h"
 
 #include <filesystem>
+
+#include "pancake_block.h"
 
 namespace pancake_store::datanode::storage {
 
@@ -11,7 +14,7 @@ using pancake_store::datanode::comm::DeviceFunctions;
 using pancake_store::comm::IsNotOk;
 using pancake_store::comm::ErrorCodeName;
 
-ErrorCode PancakeEngine::MakeFS(const MakeFSRequest &request, MakeFSResponse *response) {
+ErrorCode Pancake::MakeFS(const MakeFSRequest &request, MakeFSResponse *response) {
     if (request.fs_type_ != FSType::FS_TYPE_PANCAKE_BY_RAW) {
         logger_.error("code error!! fs_type not pancake.");
         return ErrorCode::PANCAKE_STORE_CODE_ERROR;
@@ -46,65 +49,96 @@ ErrorCode PancakeEngine::MakeFS(const MakeFSRequest &request, MakeFSResponse *re
         return device_size_res.first;
     }
 
-    // init pancake io
+    // check device size
+    if (device_size_res.second < k_min_device_size) {
+        logger_.error("device:{} device_size:{} less than min_device_size:{}, dev_path:{}",
+            device_name, device_size_res.second, k_min_device_size, request.device_path_);
+        return ErrorCode::DATANODE_STORAGE_DEVICE_CAPACITY_TOO_SMALL;
+    }
 
+    device_capacity_ = device_size_res.second;
+
+    // init pancake io
+    PancakeLayout pancake_layout{};
+    pancake_layout.BuildLayout(device_size_res.second);
+
+    // init tmp pancake io
+    PancakeIO pancake_io{};
+    auto err_code = co_await pancake_io.Init(request.device_path_, request.device_id_);
+    if (IsNotOk(err_code)) {
+        logger_.error("pancake io init failed. err:{}, dev_path:{}, dev_id:{}",
+            ErrorCodeName(err_code), request.device_path_, request.device_id_);
+        return err_code;
+    }
+
+    // init extent blocks
+    auto extent_blocks_layout = pancake_layout.ExtentsBlocksLayout();
+    for (auto i = 0; i < extent_blocks_layout.block_count_; ++i) {
+        uint64_t dev_offset = (extent_blocks_layout.block_index_ * k_block_size) +
+            static_cast<uint64_t>(k_extent_block_size * i);
+        //
+    }
+
+    // init extent bit map blocks
+
+    // init super block
 
     return ErrorCode::PANCAKE_STORE_OK;
 }
 
-ErrorCode PancakeEngine::Mount(const MountRequest &request, MountResponse *response) {
+ErrorCode Pancake::Mount(const MountRequest &request, MountResponse *response) {
 
 }
 
-ErrorCode PancakeEngine::ReadAt(ExtentId ext_id, uint32_t offset, uint32_t size) {
+ErrorCode Pancake::ReadAt(ExtentId ext_id, uint32_t offset, uint32_t size) {
 
 }
 
-ErrorCode PancakeEngine::WriteAt(ExtentId ext_id, const seastar::sstring &data, uint32_t offset) {
+ErrorCode Pancake::WriteAt(ExtentId ext_id, const seastar::sstring &data, uint32_t offset) {
 
 }
 
-ErrorCode PancakeEngine::AddExtent(ExtentInfo ext_info) {
+ErrorCode Pancake::AddExtent(ExtentInfo ext_info) {
 
 }
 
-ErrorCode PancakeEngine::DelExtent(ExtentId ext_id) {
+ErrorCode Pancake::DelExtent(ExtentId ext_id) {
 
 }
 
-ErrorCode PancakeEngine::RecoverExtent(ExtentId ext_id) {
+ErrorCode Pancake::RecoverExtent(ExtentId ext_id) {
 
 }
 
-FSType PancakeEngine::GetFSType() {
+FSType Pancake::GetFSType() {
+    return FSType::FS_TYPE_PANCAKE_BY_RAW;
+}
+
+uint64_t Pancake::DeviceId() {
+    return device_id_;
+}
+
+std::string Pancake::DeviceUUID() {
+    return device_uuid_;
+}
+
+std::string Pancake::DevicePath() {
+    return device_path_;
+}
+
+uint64_t Pancake::GetTotalCapacity() {
+    return
+}
+
+uint64_t Pancake::GetFreeCapacity() {
 
 }
 
-uint64_t PancakeEngine::DeviceId() {
+uint64_t Pancake::GetUsedCapacity() {
 
 }
 
-std::string PancakeEngine::DeviceUUID() {
-
-}
-
-std::string PancakeEngine::DevicePath() {
-
-}
-
-uint64_t PancakeEngine::GetTotalCapacity() {
-
-}
-
-uint64_t PancakeEngine::GetFreeCapacity() {
-
-}
-
-uint64_t PancakeEngine::GetUsedCapacity() {
-
-}
-
-uint64_t PancakeEngine::GetAllocateCapacity() {
+uint64_t Pancake::GetAllocateCapacity() {
 
 }
 

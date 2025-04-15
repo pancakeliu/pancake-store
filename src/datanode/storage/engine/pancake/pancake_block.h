@@ -58,14 +58,32 @@ public:
 using SuperBlockBackup = SuperBlock;
 
 struct BlockFooter {
+    void Fill(uint64_t extent_id, uint64_t length) {
+        magic_ = k_block_magic;
+        version_ = 1;
+        // flag_ = 0;
+        length_ = length;
+        extent_id_ = extent_id;
+        // memset(reserved_, 0, sizeof(reserved_));
+        // crc_ = 0;
+    }
+
+    void FillWithoutExtentId(uint64_t length) {
+        magic_ = k_block_magic;
+        version_ = 1;
+        // flag_ = 0;
+        length_ = length;
+        extent_id_ = 0;
+        // memset(reserved_, 0, sizeof(reserved_));
+        // crc_ = 0;
+    }
+
     uint32_t magic_;
     uint8_t version_;
     uint8_t flag_; // not used
     uint16_t length_;
     uint64_t extent_id_;
     uint8_t reserved_[12];
-
-private:
     uint32_t crc_{0};
 };
 
@@ -123,7 +141,7 @@ static_assert(sizeof(JournalBlock) == k_block_size);
 
 struct ExtentHeaderBlock {
 public:
-    seastar::sstring Serialize() const;
+    seastar::sstring Serialize();
     ErrorCode Deserialize(const seastar::sstring& data);
 
 public:
@@ -138,6 +156,7 @@ public:
             uint8_t code_shard_cnt_;
         };
     };
+    uint64_t device_id_;
     uint64_t extent_id_;
     uint32_t extent_capacity_;
     uint32_t extent_phy_used_;
@@ -148,7 +167,8 @@ public:
         uint8_t is_migrating_;
         uint8_t corrupted_;
     };
-    uint8_t reserved_[4032];
+    uint32_t bitmap_ext_index_;
+    uint8_t reserved_[4020];
 
     BlockFooter block_footer_;
 };

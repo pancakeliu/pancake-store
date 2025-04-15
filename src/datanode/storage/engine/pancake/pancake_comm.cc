@@ -3,7 +3,7 @@
 
 namespace pancake_store::datanode::storage {
 
-inline bool PancakeComm::IsBlockAlign(const uint64_t val) {
+inline bool PancakeComm::IsBlockAlign(const DeviceOffset val) {
     return val % k_block_size == 0;
 }
 

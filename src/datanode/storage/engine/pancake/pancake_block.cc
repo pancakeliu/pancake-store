@@ -1,5 +1,5 @@
 
-#include "src/datanode/storage/engine/pancake/pancake_fs_block.h"
+#include "src/datanode/storage/engine/pancake/pancake_block.h"
 #include "src/comm/crc.h"
 
 namespace pancake_store::datanode::storage {
@@ -576,7 +576,7 @@ ErrorCode JournalBlock::Deserialize(const seastar::sstring& data) {
     return ErrorCode::PANCAKE_STORE_OK;
 }
 
-seastar::sstring ExtentHeaderBlock::Serialize() const {
+seastar::sstring ExtentHeaderBlock::Serialize() {
     std::string result;
     result.reserve(k_block_size);
 
@@ -595,6 +595,9 @@ seastar::sstring ExtentHeaderBlock::Serialize() const {
     append_data(&data_shard_cnt_, sizeof(data_shard_cnt_));
     append_data(&code_shard_cnt_, sizeof(code_shard_cnt_));
 
+    const uint64_t be_device_id = seastar::net::hton(device_id_);
+    append_data(&be_device_id, sizeof(be_device_id));
+
     const uint64_t be_extent_id = seastar::net::hton(extent_id_);
     append_data(&be_extent_id, sizeof(be_extent_id));
 
@@ -611,6 +614,9 @@ seastar::sstring ExtentHeaderBlock::Serialize() const {
     append_data(&sealed_, sizeof(sealed_));
     append_data(&is_migrating_, sizeof(is_migrating_));
     append_data(&corrupted_, sizeof(corrupted_));
+
+    const uint32_t be_bitmap_ext_index = seastar::net::hton(bitmap_ext_index_);
+    append_data(&be_bitmap_ext_index, sizeof(be_bitmap_ext_index));
 
     append_data(&reserved_, sizeof(reserved_));
 
@@ -679,6 +685,12 @@ ErrorCode ExtentHeaderBlock::Deserialize(const seastar::sstring& data) {
         return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
     }
 
+    uint64_t be_device_id;
+    if (!read_data(&be_device_id, sizeof(be_device_id))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+    device_id_ = seastar::net::ntoh(be_device_id);
+
     uint64_t be_extent_id;
     if (!read_data(&be_extent_id, sizeof(be_extent_id))) {
         return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
@@ -718,6 +730,12 @@ ErrorCode ExtentHeaderBlock::Deserialize(const seastar::sstring& data) {
     if (!read_data(&corrupted_, sizeof(corrupted_))) {
         return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
     }
+
+    uint32_t be_bitmap_ext_index;
+    if (!read_data(&be_bitmap_ext_index, sizeof(be_bitmap_ext_index))) {
+        return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;
+    }
+    bitmap_ext_index_ = seastar::net::ntoh(be_bitmap_ext_index);
 
     if (!read_data(&reserved_, sizeof(reserved_))) {
         return ErrorCode::DATANODE_STORAGE_BLOCK_DATA_ILLEGAL;

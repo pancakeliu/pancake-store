@@ -1,6 +1,6 @@
 
 #include "src/datanode/storage/engine/pancake/pancake_io.h"
-#include "src/datanode/storage/engine/pancake/pancake_fs_block.h"
+#include "src/datanode/storage/engine/pancake/pancake_block.h"
 
 #include <seastar/core/file.hh>
 
@@ -31,6 +31,9 @@ seastar::future<ErrorCode> PancakeIO::ReadAt(uint64_t offset, uint64_t read_len,
         .then([this, read_buf](seastar::temporary_buffer<char> buf) {
             // TODO: zero copy
             read_buf->append(buf.get(), buf.size());
+
+            // TODO: crc and magic check
+
             return seastar::make_ready_future<ErrorCode>(ErrorCode::PANCAKE_STORE_OK);
         })
         .handle_exception([this, read_buf](std::exception_ptr ex) {

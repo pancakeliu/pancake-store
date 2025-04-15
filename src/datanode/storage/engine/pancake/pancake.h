@@ -2,7 +2,8 @@
 #pragma once
 
 #include "src/datanode/storage/engine/engine.h"
-#include "src/datanode/storage/engine/pancake/pancake_fs.h"
+#include "src/datanode/storage/engine/pancake/pancake_io.h"
+#include "src/datanode/storage/engine/pancake/pancake_comm.h"
 
 #include "proto/device.pb.h"
 
@@ -13,10 +14,10 @@ namespace pancake_store::datanode::storage {
 using proto::device::DeviceStatus;
 using proto::device::DeviceType;
 
-class PancakeEngine : public AbstractEngine {
+class Pancake : public AbstractEngine {
 public:
-    PancakeEngine() = default;
-    ~PancakeEngine() override = default;
+    Pancake() = default;
+    ~Pancake() override = default;
 
     ErrorCode MakeFS(const MakeFSRequest &request, MakeFSResponse *response) override;
     ErrorCode Mount(const MountRequest &request, MountResponse *response) override;
@@ -42,7 +43,10 @@ private:
     seastar::sstring device_path_;
     DeviceType device_type_{DeviceType::DEVICE_TYPE_UNKNOWN};
 
-    PancakeFS pancake_fs_;
+    uint64_t device_capacity_{0};
+    uint64_t block_size_{k_block_data_size}; // 4k
+
+    std::shared_ptr<PancakeIO> pancake_io_;
 
     seastar::logger logger_{"pancake_engine"};
 };
